@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { EbbinghausController } from './controller/ebbinghaus.controller';
+import { KnowledgePointController } from './controller/knowledgepoint.controller';
 import { KnowledgePointService } from './service/knowledgepoint.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { KnowledgePointEntity } from './entities/knowledgepoint.entity';
@@ -15,6 +15,6 @@ import { KnowledgePointLogEntity } from './entities/knowledgepointlog.entity';
   providers: [
     KnowledgePointService,
   ],
-  controllers: [EbbinghausController],
+  controllers: [KnowledgePointController],
 })
 export class EbbinghausModule {}

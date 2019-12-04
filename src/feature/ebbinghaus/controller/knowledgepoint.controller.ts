@@ -14,10 +14,10 @@ import { KnowledgePointEntity } from '../entities/knowledgepoint.entity';
 import { Util } from 'src/common/util';
 
 @Controller('knowledgepoints')
-export class EbbinghausController {
+export class KnowledgePointController {
   constructor(private ehService: KnowledgePointService) {}
 
-  @Get('1')
+  @Post()
   async create(@Body() kpDto: KnowledgePointDto): Promise<KnowledgePointDto> {
     kpDto.userId = 12;
     kpDto.createDate = Util.formatDate(new Date());
@@ -27,7 +27,7 @@ export class EbbinghausController {
     return await this.ehService.createKnowledgePoint(kpDto);
   }
 
-  @Get('2')
+  @Put()
   async edit(@Body() kpDto: KnowledgePointDto): Promise<KnowledgePointDto> {
     kpDto.id = 2;
     kpDto.userId = 12;
@@ -38,7 +38,7 @@ export class EbbinghausController {
     return await this.ehService.editKnowledgePoint(kpDto);
   }
 
-  @Get(':id')
+  @Delete(':id')
   async delete(@Param('id') kpId: number): Promise<DeleteResult> {
     return await this.ehService.deleteKnowledgePoint(kpId);
   }
