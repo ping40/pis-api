@@ -1,6 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity("kp_comment")
+@Entity('kp_comment')
 export class KnowledgePointCommentEntity {
   // 针对知识的修改批注，可以修改
   @PrimaryGeneratedColumn()
@@ -9,7 +9,7 @@ export class KnowledgePointCommentEntity {
   @Column()
   kpId: number;
 
-  @Column("text")
+  @Column('text')
   content: string;
 
   @Column()

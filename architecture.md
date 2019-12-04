@@ -16,3 +16,10 @@ core	| 核心模块（申明过滤器、管道、拦截器、守卫、中间件�
 feature	| 特性模块（主要业务模块）
 shared	| 共享模块（共享mongodb、redis封装服务、通用服务）
 tools	| 工具（提供一些小工具函数）
+
+
+
+
+参考：
+
+https://github.com/lujakob/nestjs-realworld-example-app
