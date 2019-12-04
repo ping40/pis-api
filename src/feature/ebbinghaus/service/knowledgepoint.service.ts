@@ -9,6 +9,7 @@ import { KnowledgePointLogEntity } from '../entities/knowledgepointlog.entity';
 import { KnowledgePointDto } from '../dtos/KnowledgePointDto';
 import { Transactional } from 'typeorm-transactional-cls-hooked';
 import { DeleteResult } from 'typeorm';
+import { Util } from 'src/common/util';
 
 @Injectable()
 export class KnowledgePointService {
@@ -27,7 +28,7 @@ export class KnowledgePointService {
     const newKp = new KnowledgePointEntity();
     newKp.allDone = false;
     newKp.content = dto.content;
-    newKp.createDate = new Date();
+    newKp.createDate = Util.formatDate(new Date());
     newKp.userId = dto.userId;
 
     return await this.kpRepository.save(newKp);
@@ -40,7 +41,7 @@ export class KnowledgePointService {
     newKp.id = dto.id;
     newKp.allDone = false;
     newKp.content = dto.content;
-    newKp.createDate = new Date();
+    newKp.createDate = Util.formatDate(new Date());
     newKp.userId = dto.userId;
 
     return await this.kpRepository.save(newKp);
@@ -70,10 +71,10 @@ export class KnowledgePointService {
   }
 
   @Transactional()
-  async findByDay(date: Date): Promise<KnowledgePointEntity[]> {
+  async findByDay(date: number): Promise<KnowledgePointEntity[]> {
     const qb = this.kpRepository
       .createQueryBuilder('kp')
-      .where('kp.createDate = :createDate', date);
+      .where('kp.createDate = :createDate', {createDate:  date});
 
     return await qb.getMany();
   }

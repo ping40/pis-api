@@ -12,7 +12,7 @@ export class KnowledgePointEntity { //知识点，每天可以有多个，过了
   content: string;
 
   @Column()
-  createDate: Date;
+  createDate: number; // YYYYMMDD
 
   @Column()
   allDone: boolean;
