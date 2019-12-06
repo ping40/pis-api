@@ -10,5 +10,5 @@ export class KnowledgePointLogEntity {
   kpId: number;
 
   @Column()
-  reviewDate: Date;
+  reviewDate: number;  // YYYYMMDD
 }

@@ -15,36 +15,36 @@ import { Util } from 'src/common/util';
 
 @Controller('knowledgepoints')
 export class KnowledgePointController {
-  constructor(private ehService: KnowledgePointService) {}
+  constructor(private kpService: KnowledgePointService) {}
 
   @Post()
-  async create(@Body() kpDto: KnowledgePointDto): Promise<KnowledgePointDto> {
+  async create(@Body() kpDto: KnowledgePointDto): Promise<KnowledgePointEntity> {
     kpDto.userId = 12;
     kpDto.createDate = Util.formatDate(new Date());
     kpDto.content = 'asdfas';
     kpDto.allDone = true;
 
-    return await this.ehService.createKnowledgePoint(kpDto);
+    return await this.kpService.createKnowledgePoint(kpDto);
   }
 
   @Put()
-  async edit(@Body() kpDto: KnowledgePointDto): Promise<KnowledgePointDto> {
+  async edit(@Body() kpDto: KnowledgePointDto): Promise<KnowledgePointEntity> {
     kpDto.id = 2;
     kpDto.userId = 12;
     kpDto.createDate = Util.formatDate(new Date());
     kpDto.content = 'asdfas';
     kpDto.allDone = true;
 
-    return await this.ehService.editKnowledgePoint(kpDto);
+    return await this.kpService.editKnowledgePoint(kpDto);
   }
 
   @Delete(':id')
   async delete(@Param('id') kpId: number): Promise<DeleteResult> {
-    return await this.ehService.deleteKnowledgePoint(kpId);
+    return await this.kpService.deleteKnowledgePoint(kpId);
   }
 
   @Get(':date/date')
   async findByDay(@Param('date') date: number): Promise<KnowledgePointEntity[] > {
-    return await  this.ehService.findByDay(date);
+    return await  this.kpService.findByDay(date);
   }
 }
