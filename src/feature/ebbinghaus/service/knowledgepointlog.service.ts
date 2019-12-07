@@ -37,7 +37,7 @@ export class KnowledgePointLogService {
     }
 
     const newKpl = new KnowledgePointLogEntity();
-    newKpl.kpId = dto.kpId;
+    newKpl.knowledgePointEntity = one;
     newKpl.reviewDate = Util.formatDate(new Date());
 
     return await this.kplRepository.save(newKpl);

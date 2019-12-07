@@ -382,7 +382,7 @@
 									"var responseJSON = JSON.parse(responseBody);",
 									"",
 									"tests['list lenght'] = responseJSON.length > 0;",
-									"console.log(responseJSON.length)",
+									"console.log('find kp: ' + responseBody)",
 									"for(var i=0; i < responseJSON.length; i++) {",
 									"    var kp = responseJSON[i];",
 									"    tests['kp has \"id\" property'] = kp.hasOwnProperty('id');",
@@ -417,7 +417,58 @@
 								"{{APIURL}}"
 							],
 							"path": [
-								"knowledgepoints/{{createDate}}"
+								"knowledgepoints/{{createDate}}/today"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find by view date",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var responseJSON = JSON.parse(responseBody);",
+									"",
+									"console.log('find by view date, kp: ' + responseBody)",
+									"for(var i=0; i < responseJSON.length; i++) {",
+									"    var kp = responseJSON[i];",
+									"    tests['kp has \"id\" property'] = kp.hasOwnProperty('id');",
+									"    tests['kp has \"userId\" property'] = kp.hasOwnProperty('userId');",
+									"    tests['kp has legal \"userId\" value'] = kp.userId === pm.globals.get('userId');",
+									"    tests['kp has \"createDate\" property'] = kp.hasOwnProperty('createDate');",
+									"    tests['kp has legal \"createDate\" value'] = kp.createDate === pm.globals.get('createDate');",
+									"}",						
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}"
+							}
+						],
+						"url": {
+							"host": [
+								"{{APIURL}}"
+							],
+							"path": [
+								"knowledgepoints/{{createDate}}/reviewday"
 							]
 						}
 					},
@@ -482,8 +533,13 @@
 								"type": "text/javascript",
 								"exec": [
 									"var responseJSON = JSON.parse(responseBody);",
+									"console.log(responseBody);",
 									"tests['Response contains \"id\" property'] = responseJSON.hasOwnProperty('id');",
-									"tests['Response contains \"kpId\" property'] = responseJSON.hasOwnProperty('kpId');",
+									"tests['Response contains \"knowledgePointEntity\" property'] = responseJSON.hasOwnProperty('knowledgePointEntity');",
+           							"var kp = responseJSON.knowledgePointEntity || {};",
+									"",
+									"tests['kp has legal kp id'] = kp.id === pm.globals.get('kpId2');",
+									"tests['kp has legal user id'] = kp.userId === pm.globals.get('userId');",
 									"tests['Response contains \"reviewDate\" property'] = responseJSON.hasOwnProperty('reviewDate');",
 									""
 								]

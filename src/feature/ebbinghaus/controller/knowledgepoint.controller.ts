@@ -36,8 +36,13 @@ export class KnowledgePointController {
     return await this.kpService.deleteKnowledgePoint(userId, kpId);
   }
 
-  @Get(':date')
+  @Get(':date/today')
   async findByDay(@User('id') userId: number, @Param('date') date: number): Promise<KnowledgePointEntity[] > {
     return await  this.kpService.findByDay(userId, date);
+  }
+
+  @Get(':date/reviewday')
+  async reviewByDay(@User('id') userId: number, @Param('date') date: number): Promise<KnowledgePointEntity[] > {
+    return await  this.kpService.reviewByDay(userId, date);
   }
 }

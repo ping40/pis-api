@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { KnowledgePointEntity } from './knowledgepoint.entity';
 
 @Entity('kp_log')
 export class KnowledgePointLogEntity {
@@ -6,8 +7,8 @@ export class KnowledgePointLogEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  kpId: number;
+  @ManyToOne(type => KnowledgePointEntity, knowledgePointEntity => knowledgePointEntity.logs)
+  knowledgePointEntity: KnowledgePointEntity;
 
   @Column()
   reviewDate: number;  // YYYYMMDD

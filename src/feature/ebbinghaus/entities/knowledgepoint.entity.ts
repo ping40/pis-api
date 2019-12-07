@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { KnowledgePointLogEntity } from './knowledgepointlog.entity';
 
 @Entity('kp')
 export class KnowledgePointEntity { //知识点，每天可以有多个，过了今天就不能修改, 是Data Mapper pattern，不是Active Record pattern
@@ -16,4 +17,7 @@ export class KnowledgePointEntity { //知识点，每天可以有多个，过了
 
   @Column()
   allDone: boolean;
+
+  @OneToMany(type => KnowledgePointLogEntity, logs => logs.knowledgePointEntity)
+    logs: KnowledgePointLogEntity[];
 }

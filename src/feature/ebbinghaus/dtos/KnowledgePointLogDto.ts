@@ -1,4 +1,4 @@
-import { KnowledgePointLogEntity } from '../entities/knowledgepointlog.entity';
-
-export class KnowledgePointLogDto  extends KnowledgePointLogEntity {
+export class KnowledgePointLogDto {
+  id: number;
+  kpId: number;
 }
