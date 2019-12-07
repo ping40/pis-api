@@ -18,15 +18,19 @@
 								"type": "text/javascript",
 								"exec": [
 									"var responseJSON = JSON.parse(responseBody);",
-									"",
 									"tests['Response contains \"user\" property'] = responseJSON.hasOwnProperty('user');",
 									"",
 									"var user = responseJSON.user || {};",
 									"",
 									"tests['User has \"name\" property'] = user.hasOwnProperty('name');",
 									"tests['User has \"token\" property'] = user.hasOwnProperty('token');",
+									"",
+								    "if(tests['User has \"token\" property']){",
+									"    pm.globals.set('token', user.token);",
+									"    pm.globals.set('userId', user.id);",
+									"}",
 									""
-								]
+									]
 							}
 						}
 					],
@@ -47,7 +51,6 @@
 							"raw": "{\"user\":{\"name\":\"{{USERNAME}}\", \"password\":\"{{PASSWORD}}\"}}"
 						},
 						"url": {
-							"raw": "{{APIURL}}/user/login",
 							"host": [
 								"{{APIURL}}"
 							],
@@ -58,8 +61,718 @@
 						}
 					},
 					"response": []
-				}
+				},				
+				{
+					"name": "Login with wrong password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var is401Response = responseCode.code === 401;",
+									"",
+									"tests['Response code is 401 OK'] = is401Response;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"user\":{\"name\":\"{{USERNAME}}\", \"password\":\"okk{{PASSWORD}}\"}}"
+						},
+						"url": {
+							"host": [
+								"{{APIURL}}"
+							],
+							"path": [
+								"user",
+								"login"
 							]
+						}
+					},
+					"response": []
+				}				
+			]
+		},
+		{
+			"name": "knowledgepoints",
+			"item": [
+				{
+					"name": "create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var responseJSON = JSON.parse(responseBody);",
+									"console.log('abb' + responseBody  + ', userId: ' + pm.globals.get('userId') );",
+									"tests['Response contains \"id\" property'] = responseJSON.hasOwnProperty('id');",
+									"tests['Response contains \"userId\" property'] = responseJSON.hasOwnProperty('userId');",
+									"tests['Response contains legal \"userId\" value'] = responseJSON.userId === pm.globals.get('userId');",
+									"tests['Response contains \"content\" property'] = responseJSON.hasOwnProperty('content');",
+									"tests['Response contains \"createDate\" property'] = responseJSON.hasOwnProperty('createDate');",
+									"tests['Response contains \"allDone\" property'] = responseJSON.hasOwnProperty('allDone');",
+									"tests['Response contains \"id\" property'] = responseJSON.hasOwnProperty('id');",
+							    	"tests['createDate is number'] = /^\\d{8,8}$/.test(responseJSON.createDate);",
+									"tests['allDone is false'] = responseJSON.allDone === false;",
+									"tests['content is fixed string'] = responseJSON.content === \"from postman test\";",
+								    "if(tests['Response contains \"id\" property']){",
+									"   pm.globals.set('kpId', responseJSON.id);",
+									"}",						
+									"if(tests['Response contains \"createDate\" property']){",
+									"   pm.globals.set('createDate', responseJSON.createDate);",
+									"}",						
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"content\":\"from postman test\"}"
+						},
+						"url": {
+							"host": [
+								"{{APIURL}}"
+							],
+							"path": [
+								"knowledgepoints"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create for log and comment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var responseJSON = JSON.parse(responseBody);",
+									"tests['Response contains \"id\" property'] = responseJSON.hasOwnProperty('id');",
+									"if(tests['Response contains \"id\" property']){",
+									"   pm.globals.set('kpId2', responseJSON.id);",
+									"}",						
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"content\":\"from postman test for log and comment\"}"
+						},
+						"url": {
+							"host": [
+								"{{APIURL}}"
+							],
+							"path": [
+								"knowledgepoints"
+							]
+						}
+					},
+					"response": []
+				},		
+				{
+					"name": "create with empty content",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var is500Response = responseCode.code === 500;",
+									"",
+									"tests['Response code is 500 OK'] = is500Response;",															
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"host": [
+								"{{APIURL}}"
+							],
+							"path": [
+								"knowledgepoints"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create with no login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var is401Response = responseCode.code === 401;",
+									"",
+									"tests['Response code is 401 OK'] = is401Response;",															
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"content\":\"from postman test\"}"
+						},
+						"url": {
+							"host": [
+								"{{APIURL}}"
+							],
+							"path": [
+								"knowledgepoints"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "edit",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var responseJSON = JSON.parse(responseBody);",
+									"console.log('abb' + responseBody  + ', userId: ' + pm.globals.get('userId') );",
+									"tests['Response contains \"id\" property'] = responseJSON.hasOwnProperty('id');",
+									"tests['Response contains \"userId\" property'] = responseJSON.hasOwnProperty('userId');",
+									"tests['Response contains legal \"userId\" value'] = responseJSON.userId === pm.globals.get('userId');",
+									"tests['Response contains \"content\" property'] = responseJSON.hasOwnProperty('content');",
+									"tests['Response contains \"createDate\" property'] = responseJSON.hasOwnProperty('createDate');",
+									"tests['Response contains \"allDone\" property'] = responseJSON.hasOwnProperty('allDone');",
+									"tests['Response contains \"id\" property'] = responseJSON.hasOwnProperty('id');",
+							    	"tests['createDate is number'] = /^\\d{8,8}$/.test(responseJSON.createDate);",
+									"tests['allDone is false'] = responseJSON.allDone === false;",
+									"tests['content is fixed string'] = responseJSON.content === \"from postman test modify\";",
+								    "if(tests['Response contains \"id\" property']){",
+									"   pm.globals.set('kpId', responseJSON.id);",
+									"}",						
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"id\": {{kpId}},\"content\":\"from postman test modify\"}"
+						},
+						"url": {
+							"host": [
+								"{{APIURL}}"
+							],
+							"path": [
+								"knowledgepoints"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find by date",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var responseJSON = JSON.parse(responseBody);",
+									"",
+									"tests['list lenght'] = responseJSON.length > 0;",
+									"console.log(responseJSON.length)",
+									"for(var i=0; i < responseJSON.length; i++) {",
+									"    var kp = responseJSON[i];",
+									"    tests['kp has \"id\" property'] = kp.hasOwnProperty('id');",
+									"    tests['kp has \"userId\" property'] = kp.hasOwnProperty('userId');",
+									"    tests['kp has legal \"userId\" value'] = kp.userId === pm.globals.get('userId');",
+									"    tests['kp has \"createDate\" property'] = kp.hasOwnProperty('createDate');",
+									"    tests['kp has legal \"createDate\" value'] = kp.createDate === pm.globals.get('createDate');",
+									"}",						
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}"
+							}
+						],
+						"url": {
+							"host": [
+								"{{APIURL}}"
+							],
+							"path": [
+								"knowledgepoints/{{createDate}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+								    "var is200Response = responseCode.code === 200;",
+									"",
+									"tests['Response code is 200 OK'] = is200Response;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}"
+							}
+						],
+						"url": {
+							"host": [
+								"{{APIURL}}"
+							],
+							"path": [
+								"knowledgepoints/{{kpId}}"
+							]
+						}
+					},
+					"response": []
+				}
+	
+	
+			]
+		},
+		{
+			"name": "knowledgepoint log",
+			"item": [
+				{
+					"name": "create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var responseJSON = JSON.parse(responseBody);",
+									"tests['Response contains \"id\" property'] = responseJSON.hasOwnProperty('id');",
+									"tests['Response contains \"kpId\" property'] = responseJSON.hasOwnProperty('kpId');",
+									"tests['Response contains \"reviewDate\" property'] = responseJSON.hasOwnProperty('reviewDate');",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"kpId\":{{kpId2}}}"
+						},
+						"url": {
+							"host": [
+								"{{APIURL}}"
+							],
+							"path": [
+								"knowledgepointlogs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create with deleted kpId",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+								    "var is400Response = responseCode.code === 400;",
+									"",
+									"tests['Response code is 400 OK'] = is400Response;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"kpId\":{{kpId}}}"
+						},
+						"url": {
+							"host": [
+								"{{APIURL}}"
+							],
+							"path": [
+								"knowledgepointlogs"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "knowledgepoint comment",
+			"item": [
+			{
+					"name": "create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+   								    "var responseJSON = JSON.parse(responseBody);",
+									"tests['Response contains \"id\" property'] = responseJSON.hasOwnProperty('id');",
+									"if(tests['Response contains \"id\" property']){",
+									"      pm.globals.set('cId', responseJSON.id);",
+									"}",
+									"tests['Response contains \"kpId\" property'] = responseJSON.hasOwnProperty('kpId');",
+									"if(tests['Response contains \"kpId\" property']){",
+									"      tests['Response contains legal \"kpId\" value'] = responseJSON.kpId === pm.globals.get('kpId2');",
+									"}",
+									"tests['Response contains \"content\" property'] = responseJSON.hasOwnProperty('content');",
+									"tests['Response contains \"createDate\" property'] = responseJSON.hasOwnProperty('createDate');",
+									"tests['content is fixed string'] = responseJSON.content === \"comment content\";",
+									""
+									]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"content\":\"comment content\",\"kpId\": {{kpId2}}}"
+						},
+						"url": {
+							"host": [
+								"{{APIURL}}"
+							],
+							"path": [
+								"knowledgepointcomments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "edit",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+   								    "var responseJSON = JSON.parse(responseBody);",
+									"tests['Response contains \"id\" property'] = responseJSON.hasOwnProperty('id');",
+									"if(tests['Response contains \"id\" property']){",
+									"        tests['id is same'] = responseJSON.id === pm.globals.get('cId');",
+									"}",
+									"tests['Response contains \"kpId\" property'] = responseJSON.hasOwnProperty('kpId');",
+									"if(tests['Response contains \"kpId\" property']){",
+									"      tests['Response contains legal \"kpId\" value'] = responseJSON.kpId === pm.globals.get('kpId2');",
+									"}",
+									"tests['Response contains \"content\" property'] = responseJSON.hasOwnProperty('content');",
+									"tests['Response contains \"createDate\" property'] = responseJSON.hasOwnProperty('createDate');",
+									"tests['content is fixed string'] = responseJSON.content === \"comment content modify\";",
+									""
+									]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"content\":\"comment content modify\", \"id\": {{cId}}}"
+						},
+						"url": {
+							"host": [
+								"{{APIURL}}"
+							],
+							"path": [
+								"knowledgepointcomments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+     								"var is200Response = responseCode.code === 200;",
+									"",
+									"tests['Response code is 200 OK'] = is200Response;",
+									""
+									]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}"
+							}
+						],
+						"url": {
+							"host": [
+								"{{APIURL}}"
+							],
+							"path": [
+								"knowledgepointcomments/{{cId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete with wrong id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+     								"var is400Response = responseCode.code === 400;",
+									"console.log(responseBody);",
+									"tests['Response code is 400 OK'] = is400Response;",
+									""
+									]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}"
+							}
+						],
+						"url": {
+							"host": [
+								"{{APIURL}}"
+							],
+							"path": [
+								"knowledgepointcomments/999{{cId}}"
+							]
+						}
+					},
+					"response": []
+				}
+				
+			]
 		}
 	]
 }

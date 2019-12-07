@@ -10,14 +10,15 @@ export class UserController {
 
   @Post('login')
   async login(@Body('user') loginUserDto: LoginUserDto): Promise<UserRO> {
+    console.log("in login method:  " + loginUserDto ) ;
     const user = await this.userService.findOne(loginUserDto);
 
-    const errors = {User: ' not found'};
+    const errors = {user: ' not found'};
     if (!user) { throw new HttpException({errors}, 401); }
 
     const token = this.userService.generateJWT(user);
     const {name, id} = user;
-    const userRo = {name, token};
+    const userRo = {id, name, token};
     return {user: userRo};
   }
 }

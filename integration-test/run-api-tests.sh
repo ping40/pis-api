@@ -7,8 +7,8 @@ APIURL=${APIURL:-http://localhost:3000}
 USERNAME='ping40';
 PASSWORD='nestjs';
 
-npx newman run $SCRIPTDIR/Pis.postman_collection.json \
-  --delay-request 500 \
+newman run $SCRIPTDIR/Pis.postman_collection.json \
+  --delay-request 10 \
   --global-var "APIURL=$APIURL" \
   --global-var "USERNAME=$USERNAME" \
   --global-var "PASSWORD=$PASSWORD"

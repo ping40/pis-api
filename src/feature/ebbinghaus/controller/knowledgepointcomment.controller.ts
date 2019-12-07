@@ -1,4 +1,4 @@
-import { KnowledgePointService } from '../service/knowledgepoint.service';
+
 import {
   Controller,
   Post,
@@ -6,39 +6,30 @@ import {
   Put,
   Delete,
   Param,
-  Get,
 } from '@nestjs/common';
-import { KnowledgePointDto } from '../dtos/KnowledgePointDto';
 import { DeleteResult } from 'typeorm';
-import { KnowledgePointEntity } from '../entities/knowledgepoint.entity';
-import { Util } from 'src/common/util';
-import { KnowledgePointLogService } from '../service/knowledgepointlog.service';
-import { KnowledgePointLogDto } from '../dtos/KnowledgePointLogDto';
-import { KnowledgePointLogEntity } from '../entities/knowledgepointlog.entity';
+import { User } from 'src/shared/user/user.decorator';
+import { KnowledgePointCommentService } from '../service/knowledgepointcomment.service';
+import { KnowledgePointCommentDto } from '../dtos/KnowledgePointCommentDto';
+import { KnowledgePointCommentEntity } from '../entities/knowledgepointcomment.entity';
 
-@Controller('knowledgepointlogs')
-export class KnowledgePointLogController {
-  constructor(private kplService: KnowledgePointLogService) {}
+@Controller('knowledgepointcomments')
+export class KnowledgePointCommentController {
+  constructor(private kpcService: KnowledgePointCommentService) {}
 
   @Post()
-  async create(@Body() kplDto: KnowledgePointLogDto): Promise<KnowledgePointLogEntity> {
-    kplDto.content = 'asdfas';
-    kplDto.kpId = 2;
-
-    return await this.kplService.createKnowledgePointLog(kplDto);
+  async create(@User('id') userId: number, @Body() kpcDto: KnowledgePointCommentDto): Promise<KnowledgePointCommentEntity> {
+    return await this.kpcService.createKnowledgePointComment(userId, kpcDto);
   }
 
   @Put()
-  async edit(@Body() kplDto: KnowledgePointLogDto): Promise<KnowledgePointLogEntity> {
-    kplDto.content = 'asdfas';
-    kplDto.kpId = 2;
-
-    return await this.kplService.editKnowledgePointLog(kplDto);
+  async edit(@User('id') userId: number, @Body() kpcDto: KnowledgePointCommentDto): Promise<KnowledgePointCommentEntity> {
+    return await this.kpcService.editKnowledgePointComment(userId, kpcDto);
   }
 
   @Delete(':id')
-  async delete(@Param('id') logId: number): Promise<DeleteResult> {
-    return await this.kplService.deleteKnowledgePointLog(logId);
+  async delete(@User('id') userId: number, @Param('id') logId: number): Promise<DeleteResult> {
+    return await this.kpcService.deleteKnowledgePointComment(userId, logId);
   }
 
 }

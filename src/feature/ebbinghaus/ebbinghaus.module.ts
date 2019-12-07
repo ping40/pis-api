@@ -7,6 +7,8 @@ import { KnowledgePointCommentEntity } from './entities/knowledgepointcomment.en
 import { KnowledgePointLogEntity } from './entities/knowledgepointlog.entity';
 import { KnowledgePointLogService } from './service/knowledgepointlog.service';
 import { KnowledgePointLogController } from './controller/knowledgepointlog.controller';
+import { KnowledgePointCommentController } from './controller/knowledgepointcomment.controller';
+import { KnowledgePointCommentService } from './service/knowledgepointcomment.service';
 
 @Module({
   imports: [
@@ -17,10 +19,12 @@ import { KnowledgePointLogController } from './controller/knowledgepointlog.cont
   providers: [
     KnowledgePointService,
     KnowledgePointLogService,
+    KnowledgePointCommentService,
   ],
   controllers: [
     KnowledgePointController,
     KnowledgePointLogController,
+    KnowledgePointCommentController,
   ],
 })
 export class EbbinghausModule {}

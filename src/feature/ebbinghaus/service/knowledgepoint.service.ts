@@ -34,22 +34,11 @@ export class KnowledgePointService {
     return await this.kpRepository.save(newKp);
   }
 
+  @Transactional()
   async editKnowledgePoint(
     dto: KnowledgePointDto,
   ): Promise<KnowledgePointEntity> {
-    const newKp = new KnowledgePointEntity();
-    newKp.id = dto.id;
-    newKp.allDone = false;
-    newKp.content = dto.content;
-    newKp.createDate = Util.formatDate(new Date());
-    newKp.userId = dto.userId;
-
-    return await this.kpRepository.save(newKp);
-  }
-
-  @Transactional()
-  async deleteKnowledgePoint(kpId: number): Promise<DeleteResult> {
-    const one = await this.findOne(kpId);
+    const one = await this.findOne(dto.userId,dto.id);
     if (!one) {
       throw new HttpException(
         { message: '知识点不存在.' },
@@ -57,24 +46,60 @@ export class KnowledgePointService {
       );
     }
 
-    // 判断是否是自己的kp
+    if (one.userId !== dto.userId) {
+      throw new HttpException(
+        { message: '无权修改别人的知识点.' },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    if (one.createDate !== Util.formatDate(new Date())) {
+      throw new HttpException(
+        { message: '仅仅允许修改今天的知识点.' },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    one.content = dto.content;
+
+    return await this.kpRepository.save(one);
+  }
+
+  @Transactional()
+  async deleteKnowledgePoint(userId: number, kpId: number): Promise<DeleteResult> {
+    const one = await this.findOne(userId, kpId);
+    if (!one) {
+      throw new HttpException(
+        { message: '知识点不存在.' },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    if (one.userId !== userId) {
+      throw new HttpException(
+        { message: '无权修改别人的知识点.' },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     return await this.kpRepository.delete({ id: kpId });
   }
 
-  private async findOne(kpId: number): Promise<KnowledgePointEntity> {
+  private async findOne(userId: number, kpId: number): Promise<KnowledgePointEntity> {
     const findOneOptions = {
-      id: kpId,
+      'id': kpId,
+      userId: userId,
     };
 
     return await this.kpRepository.findOne(findOneOptions);
   }
 
   @Transactional()
-  async findByDay(date: number): Promise<KnowledgePointEntity[]> {
+  async findByDay(userId: number, date: number): Promise<KnowledgePointEntity[]> {
     const qb = this.kpRepository
       .createQueryBuilder('kp')
-      .where('kp.createDate = :createDate', {createDate:  date});
+      .where('kp.userId = :userId', {userId})
+      .andWhere('kp.createDate = :createDate', {createDate:  date});
 
     return await qb.getMany();
   }

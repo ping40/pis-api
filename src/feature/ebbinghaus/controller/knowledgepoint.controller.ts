@@ -11,40 +11,33 @@ import {
 import { KnowledgePointDto } from '../dtos/KnowledgePointDto';
 import { DeleteResult } from 'typeorm';
 import { KnowledgePointEntity } from '../entities/knowledgepoint.entity';
-import { Util } from 'src/common/util';
+import { User } from 'src/shared/user/user.decorator';
 
 @Controller('knowledgepoints')
 export class KnowledgePointController {
   constructor(private kpService: KnowledgePointService) {}
 
   @Post()
-  async create(@Body() kpDto: KnowledgePointDto): Promise<KnowledgePointEntity> {
-    kpDto.userId = 12;
-    kpDto.createDate = Util.formatDate(new Date());
-    kpDto.content = 'asdfas';
-    kpDto.allDone = true;
+  async create(@User('id') userId: number, @Body() kpDto: KnowledgePointDto): Promise<KnowledgePointEntity> {
+    kpDto.userId = userId;
 
     return await this.kpService.createKnowledgePoint(kpDto);
   }
 
   @Put()
-  async edit(@Body() kpDto: KnowledgePointDto): Promise<KnowledgePointEntity> {
-    kpDto.id = 2;
-    kpDto.userId = 12;
-    kpDto.createDate = Util.formatDate(new Date());
-    kpDto.content = 'asdfas';
-    kpDto.allDone = true;
+  async edit(@User('id') userId: number, @Body() kpDto: KnowledgePointDto): Promise<KnowledgePointEntity> {
+    kpDto.userId = userId;
 
     return await this.kpService.editKnowledgePoint(kpDto);
   }
 
   @Delete(':id')
-  async delete(@Param('id') kpId: number): Promise<DeleteResult> {
-    return await this.kpService.deleteKnowledgePoint(kpId);
+  async delete(@User('id') userId: number, @Param('id') kpId: number): Promise<DeleteResult> {
+    return await this.kpService.deleteKnowledgePoint(userId, kpId);
   }
 
-  @Get(':date/date')
-  async findByDay(@Param('date') date: number): Promise<KnowledgePointEntity[] > {
-    return await  this.kpService.findByDay(date);
+  @Get(':date')
+  async findByDay(@User('id') userId: number, @Param('date') date: number): Promise<KnowledgePointEntity[] > {
+    return await  this.kpService.findByDay(userId, date);
   }
 }

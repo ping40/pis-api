@@ -19,6 +19,14 @@ export class UserService {
      return user;
   }
 
+  async findById(id: number): Promise<User> {
+    const user  = _.find(ALLUSER, (o) => {
+         return o.id === id;
+     });
+
+    return user;
+ }
+
   public generateJWT(user: User): string {
     const today = new Date();
     const exp = new Date(today);

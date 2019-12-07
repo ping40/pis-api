@@ -18,13 +18,20 @@ export class KnowledgePointLogService {
   ) {}
 
   @Transactional()
-  async createKnowledgePointLog(
-    dto: KnowledgePointLogDto,
+  async createKnowledgePointLog(userId: number,
+                                dto: KnowledgePointLogDto,
   ): Promise<KnowledgePointLogEntity> {
     const one = await this.kpRepository.findOne({id: dto.kpId});
     if (!one) {
       throw new HttpException(
         { message: '知识点不存在.' },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    if (one.userId !== userId) {
+      throw new HttpException(
+        { message: '无权给别人的知识点增加备注.' },
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -35,6 +42,5 @@ export class KnowledgePointLogService {
 
     return await this.kplRepository.save(newKpl);
   }
-
 
 }
