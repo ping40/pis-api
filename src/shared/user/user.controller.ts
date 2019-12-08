@@ -2,15 +2,17 @@ import { Controller, Post, Body, HttpException } from '@nestjs/common';
 import { LoginUserDto } from './dto/login-user.dto';
 import { UserService } from './user.service';
 import { UserRO } from './user.interface';
+import { LoggerService } from 'nest-logger';
 
 @Controller('user')
 export class UserController {
 
-    constructor(private readonly userService: UserService) {}
+    constructor(private readonly userService: UserService,
+                private readonly logger: LoggerService) {}
 
   @Post('login')
   async login(@Body('user') loginUserDto: LoginUserDto): Promise<UserRO> {
-    console.log("in login method:  " + loginUserDto ) ;
+    this.logger.debug(`in login method:  ${loginUserDto}` ) ;
     const user = await this.userService.findOne(loginUserDto);
 
     const errors = {user: ' not found'};

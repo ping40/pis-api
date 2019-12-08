@@ -6,6 +6,7 @@ async function bootstrap() {
   initializeTransactionalContext(); // Initialize cls-hooked
 
   const app = await NestFactory.create(AppModule);
+  app.enableCors();
   await app.listen(3000);
 }
 bootstrap();

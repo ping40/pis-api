@@ -124,13 +124,15 @@
 									"tests['Response contains \"id\" property'] = responseJSON.hasOwnProperty('id');",
 									"tests['Response contains \"userId\" property'] = responseJSON.hasOwnProperty('userId');",
 									"tests['Response contains legal \"userId\" value'] = responseJSON.userId === pm.globals.get('userId');",
+									"tests['Response contains \"title\" property'] = responseJSON.hasOwnProperty('title');",
 									"tests['Response contains \"content\" property'] = responseJSON.hasOwnProperty('content');",
 									"tests['Response contains \"createDate\" property'] = responseJSON.hasOwnProperty('createDate');",
 									"tests['Response contains \"allDone\" property'] = responseJSON.hasOwnProperty('allDone');",
 									"tests['Response contains \"id\" property'] = responseJSON.hasOwnProperty('id');",
 							    	"tests['createDate is number'] = /^\\d{8,8}$/.test(responseJSON.createDate);",
 									"tests['allDone is false'] = responseJSON.allDone === false;",
-									"tests['content is fixed string'] = responseJSON.content === \"from postman test\";",
+									"tests['content is fixed string'] = responseJSON.content === \"<p>from     postman test<br/></p>\";",
+								    "tests['title is fixed string'] = responseJSON.title === \"from postman test\";",
 								    "if(tests['Response contains \"id\" property']){",
 									"   pm.globals.set('kpId', responseJSON.id);",
 									"}",						
@@ -160,7 +162,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"content\":\"from postman test\"}"
+							"raw": "{\"content\":\"<p>from     postman test<br/></p>\"}"
 						},
 						"url": {
 							"host": [
@@ -417,7 +419,7 @@
 								"{{APIURL}}"
 							],
 							"path": [
-								"knowledgepoints/{{createDate}}/today"
+								"knowledgepoints/today/{{createDate}}"
 							]
 						}
 					},
@@ -468,7 +470,61 @@
 								"{{APIURL}}"
 							],
 							"path": [
-								"knowledgepoints/{{createDate}}/reviewday"
+								"knowledgepoints/reviewday/{{createDate}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find by pagination",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var responseJSON = JSON.parse(responseBody);",
+									"",
+									"console.log('find by pagination, kp: ' + responseBody)",
+									"for(var i=0; i < responseJSON.length; i++) {",
+									"    var kp = responseJSON[i];",
+									"    tests['kp has \"id\" property'] = kp.hasOwnProperty('id');",
+									"    tests['kp has \"reviewStatus\" property'] = kp.hasOwnProperty('reviewStatus');",
+									"    tests['kp has \"createDate\" property'] = kp.hasOwnProperty('createDate');",
+									"    tests['kp has legal \"createDate\" value'] = kp.createDate === pm.globals.get('createDate');",
+									"}",						
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"limit\": 10 ,\"pageNumber\": 1 }"
+						},
+						"url": {
+							"host": [
+								"{{APIURL}}"
+							],
+							"path": [
+								"knowledgepoints/page"
 							]
 						}
 					},

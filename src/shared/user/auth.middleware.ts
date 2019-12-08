@@ -4,19 +4,19 @@ import { Request, Response, NextFunction } from 'express';
 import { verify } from 'jsonwebtoken';
 import { SECRET } from '../../config/config';
 import { UserService } from './user.service';
+import { LoggerService } from 'nest-logger';
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService,
+              private readonly logger: LoggerService) {}
 
   async use(req: Request, res: Response, next: NextFunction) {
-    console.log("in middlewar: " +  req.originalUrl);
+    this.logger.debug(`in middlewar: url: ${req.originalUrl}`);
 
     if (req.originalUrl === '/user/login') {
-      console.log("in middlewar: 1111 " +  req.originalUrl);
       next();
     } else {
-      console.log("in middlewar: 2222" +  req.originalUrl);
       const authHeaders = req.headers.authorization;
       if (authHeaders && (authHeaders as string).split(' ')[1]) {
         const token = (authHeaders as string).split(' ')[1];
@@ -24,6 +24,7 @@ export class AuthMiddleware implements NestMiddleware {
         const user = await this.userService.findById(decoded.id);
 
         if (!user) {
+          this.logger.warn(`in middlewar: url: ${req.originalUrl}, User not found`);
           throw new HttpException('User not found.', HttpStatus.UNAUTHORIZED);
         }
 

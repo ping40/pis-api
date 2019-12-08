@@ -10,6 +10,9 @@ export class KnowledgePointEntity { //知识点，每天可以有多个，过了
   userId: number;
 
   @Column('text')
+   title: string;
+
+  @Column('text')
   content: string;
 
   @Column()

@@ -10,6 +10,10 @@ import { KnowledgePointDto } from '../dtos/KnowledgePointDto';
 import { Transactional } from 'typeorm-transactional-cls-hooked';
 import { DeleteResult } from 'typeorm';
 import { Util } from 'src/common/util';
+import { KnowledgePointPageCondition } from '../dtos/KnowledgePointPageCondition';
+import { KnowledgePointPageDto, KnowledgePointStatus } from '../dtos/KnowledgePointPageDto';
+import { LoggerService } from 'nest-logger';
+
 
 @Injectable()
 export class KnowledgePointService {
@@ -20,6 +24,7 @@ export class KnowledgePointService {
     private readonly kpcRepository: KnowledgePointCommentRepository,
     @InjectRepository(KnowledgePointLogEntity)
     private readonly kplRepository: KnowledgePointLogRepository,
+    private readonly logger: LoggerService,
   ) {}
 
   async createKnowledgePoint(
@@ -30,6 +35,7 @@ export class KnowledgePointService {
     newKp.content = dto.content;
     newKp.createDate = Util.formatDate(new Date());
     newKp.userId = dto.userId;
+    newKp.title = Util.getTitle(dto.content);
 
     return await this.kpRepository.save(newKp);
   }
@@ -61,6 +67,7 @@ export class KnowledgePointService {
     }
 
     one.content = dto.content;
+    one.title = Util.getTitle(dto.content);
 
     return await this.kpRepository.save(one);
   }
@@ -108,7 +115,7 @@ export class KnowledgePointService {
   @Transactional()
   async reviewByDay(userId: number, date: number): Promise<KnowledgePointEntity[]> {
 
-    console.log('reviewDay: ' + JSON.stringify( Util.getReviewDays(date)));
+    this.logger.debug('reviewDay: ' + JSON.stringify( Util.getReviewDays(date)));
     const qb = this.kpRepository
       .createQueryBuilder('kp')
       .where('kp.userId = :userId', {userId})
@@ -125,4 +132,38 @@ export class KnowledgePointService {
 
     return await qb.getMany();
   }
+
+  async findKnowledgePointByPage(userId: number, cond: KnowledgePointPageCondition): Promise<KnowledgePointPageDto[]> {
+
+    const cond2 = new KnowledgePointPageCondition(); //呈现一个问题：@Body 过来的对象，里面的method没有起作用？？？
+    cond2.limit = cond.limit;
+    cond2.pageNumber = cond.pageNumber;
+
+    const qb = this.kpRepository
+      .createQueryBuilder('kp')
+      .where('kp.userId = :userId', {userId})
+       .skip(cond2.skip())
+       .take(cond.limit)
+       .orderBy('kp.id', 'DESC')
+      .leftJoinAndSelect('kp.logs', 'kp_log');
+
+    const kpList = await qb.getMany();
+    const pageList: KnowledgePointPageDto[] = [];
+    let dto: KnowledgePointPageDto;
+
+    for (const kp of  kpList) {
+      dto = new KnowledgePointPageDto(kp.id, kp.title, kp.createDate);
+      pageList.push(dto);
+      if ( kp.allDone ) {
+        dto.reviewStatus = KnowledgePointStatus.Done;
+      } else if (kp.logs.length >= Util.getNeedReviewDays(kp.createDate)) {
+        dto.reviewStatus = KnowledgePointStatus.PARTIAL_DONE;
+      } else {
+        dto.reviewStatus = KnowledgePointStatus.NO_DONE;
+      }
+    }
+
+    return pageList;
+  }
+
 }

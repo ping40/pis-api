@@ -9,12 +9,14 @@ import { KnowledgePointLogService } from './service/knowledgepointlog.service';
 import { KnowledgePointLogController } from './controller/knowledgepointlog.controller';
 import { KnowledgePointCommentController } from './controller/knowledgepointcomment.controller';
 import { KnowledgePointCommentService } from './service/knowledgepointcomment.service';
+import { LoggerModule } from 'src/shared/logger/logger.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([KnowledgePointEntity]),
     TypeOrmModule.forFeature([KnowledgePointCommentEntity]),
     TypeOrmModule.forFeature([KnowledgePointLogEntity]),
+    LoggerModule,
   ],
   providers: [
     KnowledgePointService,
