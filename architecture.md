@@ -17,9 +17,9 @@ https://github.com/lujakob/nestjs-realworld-example-app
 - validation
 - Jest 测试复杂的case
 - cache
-- ConfigService, dotenv
 
 # done
 
 - postman
 - Logger
+- ConfigService, dotenv decorator里面没有替换过来。 

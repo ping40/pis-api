@@ -442,7 +442,6 @@
 									"    tests['kp has \"userId\" property'] = kp.hasOwnProperty('userId');",
 									"    tests['kp has legal \"userId\" value'] = kp.userId === pm.globals.get('userId');",
 									"    tests['kp has \"createDate\" property'] = kp.hasOwnProperty('createDate');",
-									"    tests['kp has legal \"createDate\" value'] = kp.createDate === pm.globals.get('createDate');",
 									"}",						
 									""
 								]
@@ -492,7 +491,6 @@
 									"    tests['kp has \"id\" property'] = kp.hasOwnProperty('id');",
 									"    tests['kp has \"reviewStatus\" property'] = kp.hasOwnProperty('reviewStatus');",
 									"    tests['kp has \"createDate\" property'] = kp.hasOwnProperty('createDate');",
-									"    tests['kp has legal \"createDate\" value'] = kp.createDate === pm.globals.get('createDate');",
 									"}",						
 									""
 								]

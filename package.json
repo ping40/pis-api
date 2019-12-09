@@ -34,6 +34,7 @@
     "lodash.template": "^4.5.0",
     "module": "^1.2.5",
     "nest-logger": "^3.0.0",
+    "nestjs-config": "^1.4.4",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.0",
     "rxjs": "^6.5.3",

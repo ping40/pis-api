@@ -1,18 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import { User } from './model/user.model';
-import { ConfigService } from 'src/config/ConfigService';
 import { LoginUserDto } from './dto/login-user.dto';
 import * as _ from 'lodash';
 import { sign, verify } from 'jsonwebtoken';
-import { SECRET } from 'src/config/config';
-
-const ALLUSER: User[] = ConfigService.getAllUser();
+import { ConfigService } from 'nestjs-config';
+import { LoggerService } from 'nest-logger';
 
 @Injectable()
 export class UserService {
 
+ALLUSER: User[];
+SECRET: string;
+  
+constructor(private readonly config: ConfigService,
+            private readonly logger: LoggerService) {
+    this.ALLUSER = config.get('users').allUser;
+    this.SECRET = config.get('config').SECRET;
+    this.logger.debug( JSON.stringify(this.ALLUSER));
+  }
+
   async findOne(loginUserDto: LoginUserDto): Promise<User> {
-     const user  = _.find(ALLUSER, (o) => {
+     const user  = _.find(this.ALLUSER, (o) => {
           return o.name ===  loginUserDto.name  &&   o.password === loginUserDto.password;
       });
 
@@ -20,7 +28,7 @@ export class UserService {
   }
 
   async findById(id: number): Promise<User> {
-    const user  = _.find(ALLUSER, (o) => {
+    const user  = _.find(this.ALLUSER, (o) => {
          return o.id === id;
      });
 
@@ -36,7 +44,7 @@ export class UserService {
       id: user.id,
       name: user.name,
       exp: exp.getTime() / 1000,
-    }, SECRET);
+    }, this.SECRET);
   }
 
 }

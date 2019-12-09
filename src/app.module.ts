@@ -2,16 +2,21 @@ import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigService } from './config/ConfigService';
 import { FeatureModule } from './feature/feature.module';
 import { AuthMiddleware } from './shared/user/auth.middleware';
 import { UserModule } from './shared/user/user.module';
 import { LoggerModule } from './shared/logger/logger.module';
+import { ConfigModule, ConfigService } from 'nestjs-config';
+import * as path from 'path';
 
 @Module({
   imports: [
     UserModule,
-    TypeOrmModule.forRoot(ConfigService.getTypeOrmConfig()),
+    ConfigModule.load(path.resolve(__dirname, 'config', '**', '!(*.d).{ts,js}')),
+    TypeOrmModule.forRootAsync({
+        useFactory: (config: ConfigService) => config.get('database'),
+        inject: [ConfigService],
+    }),
     FeatureModule,
     LoggerModule,
   ],
