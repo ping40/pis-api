@@ -14,7 +14,12 @@ import { KnowledgePointEntity } from '../entities/knowledgepoint.entity';
 import { User } from 'src/shared/user/user.decorator';
 import { KnowledgePointPageCondition } from '../dtos/KnowledgePointPageCondition';
 import { KnowledgePointPageDto } from '../dtos/KnowledgePointPageDto';
+import { ApiHeader } from '@nestjs/swagger';
 
+@ApiHeader({
+  name: 'Authorization',
+  description: 'Auth token',
+})
 @Controller('knowledgepoints')
 export class KnowledgePointController {
   constructor(private kpService: KnowledgePointService) {}

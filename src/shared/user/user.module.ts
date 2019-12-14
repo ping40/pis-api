@@ -9,7 +9,7 @@ import { ConfigModule } from 'nestjs-config';
   imports: [
     LoggerModule,
     ConfigModule.load(path.resolve(__dirname, '../../config', '**', '!(*.d).{ts,js}')),
-  ],
+     ],
   providers: [UserService],
   exports: [UserService],
   controllers: [UserController],

@@ -11,8 +11,8 @@ export class UserController {
                 private readonly logger: LoggerService) {}
 
   @Post('login')
-  async login(@Body('user') loginUserDto: LoginUserDto): Promise<UserRO> {
-    this.logger.debug(`in login method:  ${loginUserDto}` ) ;
+  async login(@Body() loginUserDto: LoginUserDto): Promise<UserRO> {
+    this.logger.debug(' in login method: '  + JSON.stringify( loginUserDto)  ) ;
     const user = await this.userService.findOne(loginUserDto);
 
     const errors = {user: ' not found'};

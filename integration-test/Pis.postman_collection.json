@@ -48,7 +48,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"user\":{\"name\":\"{{USERNAME}}\", \"password\":\"{{PASSWORD}}\"}}"
+							"raw": "{\"name\":\"{{USERNAME}}\", \"password\":\"{{PASSWORD}}\"}"
 						},
 						"url": {
 							"host": [
@@ -92,7 +92,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"user\":{\"name\":\"{{USERNAME}}\", \"password\":\"okk{{PASSWORD}}\"}}"
+							"raw": "{\"name\":\"{{USERNAME}}\", \"password\":\"okk{{PASSWORD}}\"}"
 						},
 						"url": {
 							"host": [
