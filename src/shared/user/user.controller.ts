@@ -15,8 +15,8 @@ export class UserController {
     this.logger.debug(' in login method: '  + JSON.stringify( loginUserDto)  ) ;
     const user = await this.userService.findOne(loginUserDto);
 
-    const errors = {user: ' not found'};
-    if (!user) { throw new HttpException({errors}, 401); }
+    const error2 = ' username/password is wrong.';
+    if(!user) { throw new HttpException(error2, 401); }
 
     const token = this.userService.generateJWT(user);
     const {name, id} = user;
