@@ -2,6 +2,7 @@
 export class KnowledgePointPageCondition {
     limit: number;
     pageNumber: number;
+    filterContent: string;
 
     skip(): number {
         if (this.pageNumber > 0) {

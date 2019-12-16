@@ -139,10 +139,15 @@ export class KnowledgePointService {
     cond2.limit = cond.limit;
     cond2.pageNumber = cond.pageNumber;
 
-    const qb = this.kpRepository
+    let qb = this.kpRepository
       .createQueryBuilder('kp')
-      .where('kp.userId = :userId', {userId})
-       .skip(cond2.skip())
+      .where('kp.userId = :userId', {userId});
+
+    if (cond.filterContent != '') {
+        qb = qb.andWhere('kp.content like :content', {content: '%' + cond.filterContent + '%'});
+      }
+
+    qb =  qb.skip(cond2.skip())
        .take(cond.limit)
        .orderBy('kp.id', 'DESC')
       .leftJoinAndSelect('kp.logs', 'kp_log');
