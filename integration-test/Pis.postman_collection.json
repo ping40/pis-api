@@ -330,8 +330,7 @@
 									"tests['Response contains \"content\" property'] = responseJSON.hasOwnProperty('content');",
 									"tests['Response contains \"createDate\" property'] = responseJSON.hasOwnProperty('createDate');",
 									"tests['Response contains \"allDone\" property'] = responseJSON.hasOwnProperty('allDone');",
-									"tests['Response contains \"id\" property'] = responseJSON.hasOwnProperty('id');",
-							    	"tests['createDate is number'] = /^\\d{8,8}$/.test(responseJSON.createDate);",
+									"tests['createDate is number'] = /^\\d{8,8}$/.test(responseJSON.createDate);",
 									"tests['allDone is false'] = responseJSON.allDone === false;",
 									"tests['content is fixed string'] = responseJSON.content === \"from postman test modify\";",
 								    "if(tests['Response contains \"id\" property']){",
@@ -368,6 +367,53 @@
 							],
 							"path": [
 								"knowledgepoints"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find by id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var responseJSON = JSON.parse(responseBody);",
+									"",
+									"console.log('find kp: ' + responseBody)",
+									"tests['Response contains \"id\" property'] = responseJSON.hasOwnProperty('id');",
+									"tests['Response contains \"content\" property'] = responseJSON.hasOwnProperty('content');",
+									"tests['Response contains \"createDate\" property'] = responseJSON.hasOwnProperty('createDate');",
+									"tests['Response contains \"reviewStatus\" property'] = responseJSON.hasOwnProperty('reviewStatus');",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Requested-With",
+								"value": "XMLHttpRequest"
+							},
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}"
+							}
+						],
+						"url": {
+							"host": [
+								"{{APIURL}}"
+							],
+							"path": [
+								"knowledgepoints/{{kpId}}"
 							]
 						}
 					},

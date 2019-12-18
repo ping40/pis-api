@@ -15,6 +15,7 @@ import { User } from 'src/shared/user/user.decorator';
 import { KnowledgePointPageCondition } from '../dtos/KnowledgePointPageCondition';
 import { KnowledgePointPageDto } from '../dtos/KnowledgePointPageDto';
 import { ApiHeader } from '@nestjs/swagger';
+import { KnowledgePointDetailDto } from '../dtos/KnowledgePointDetailDto';
 
 @ApiHeader({
   name: 'Authorization',
@@ -43,11 +44,27 @@ export class KnowledgePointController {
     return await this.kpService.deleteKnowledgePoint(userId, kpId);
   }
 
+
+  @Get(':id')
+  async find(@User('id') userId: number, @Param('id') kpId: number): Promise<KnowledgePointDetailDto > {
+    return await  this.kpService.findOne(userId, kpId);
+  }
+
+  /**
+   * 时间date 创立的知识点
+   * @param userId 
+   * @param date 
+   */
   @Get('today/:date')
   async findByDay(@User('id') userId: number, @Param('date') date: number): Promise<KnowledgePointEntity[] > {
     return await  this.kpService.findByDay(userId, date);
   }
 
+  /**
+   * 时间date 要复习的知识点
+   * @param userId 
+   * @param date 
+   */
   @Get('reviewday/:date')
   async reviewByDay(@User('id') userId: number, @Param('date') date: number): Promise<KnowledgePointEntity[] > {
     return await  this.kpService.reviewByDay(userId, date);

@@ -13,6 +13,8 @@ import { Util } from 'src/common/util';
 import { KnowledgePointPageCondition } from '../dtos/KnowledgePointPageCondition';
 import { KnowledgePointPageDto, KnowledgePointStatus } from '../dtos/KnowledgePointPageDto';
 import { LoggerService } from 'nest-logger';
+import { KnowledgePointDetailDto } from '../dtos/KnowledgePointDetailDto';
+import { KnowledgePointLogDto } from '../dtos/KnowledgePointLogDto';
 
 
 @Injectable()
@@ -44,7 +46,7 @@ export class KnowledgePointService {
   async editKnowledgePoint(
     dto: KnowledgePointDto,
   ): Promise<KnowledgePointEntity> {
-    const one = await this.findOne(dto.userId,dto.id);
+    const one = await this.findSimpleOne(dto.userId,dto.id);
     if (!one) {
       throw new HttpException(
         { message: '知识点不存在.' },
@@ -74,7 +76,7 @@ export class KnowledgePointService {
 
   @Transactional()
   async deleteKnowledgePoint(userId: number, kpId: number): Promise<DeleteResult> {
-    const one = await this.findOne(userId, kpId);
+    const one = await this.findSimpleOne(userId, kpId);
     if (!one) {
       throw new HttpException(
         { message: '知识点不存在.' },
@@ -92,7 +94,38 @@ export class KnowledgePointService {
     return await this.kpRepository.delete({ id: kpId });
   }
 
-  private async findOne(userId: number, kpId: number): Promise<KnowledgePointEntity> {
+  async findOne(userId: number, kpId: number): Promise<KnowledgePointDetailDto> {
+    
+    const qb = this.kpRepository
+    .createQueryBuilder('kp')
+    .where('kp.userId = :userId', {userId})
+    .andWhere('kp.id = :id', {id: kpId})
+    .leftJoinAndSelect('kp.logs', 'kp_log');
+
+    const kp = await qb.getOne();
+    if( !kp) {
+    throw new HttpException(
+      { message: '知识点不存在.' },
+      HttpStatus.BAD_REQUEST,
+    );
+  }
+
+    const dto  = new KnowledgePointDetailDto(kp.id, kp.title, kp.createDate);
+    dto.logs = [];
+
+    dto.content = kp.content;
+    this.setKPReviewStatus(kp, dto);
+
+    let logDto: KnowledgePointLogDto;
+    kp.logs.forEach((log) => {
+      logDto = new KnowledgePointLogDto();
+      logDto.reviewDate = log.reviewDate;
+      dto.logs.push(logDto);
+    });
+    return dto;
+  }
+
+  private async findSimpleOne(userId: number, kpId: number): Promise<KnowledgePointEntity> {
     const findOneOptions = {
       'id': kpId,
       userId: userId,
@@ -100,6 +133,7 @@ export class KnowledgePointService {
 
     return await this.kpRepository.findOne(findOneOptions);
   }
+
 
   @Transactional()
   async findByDay(userId: number, date: number): Promise<KnowledgePointEntity[]> {
@@ -159,16 +193,20 @@ export class KnowledgePointService {
     for (const kp of  kpList) {
       dto = new KnowledgePointPageDto(kp.id, kp.title, kp.createDate);
       pageList.push(dto);
-      if ( kp.allDone ) {
-        dto.reviewStatus = KnowledgePointStatus.Done;
-      } else if (kp.logs.length >= Util.getNeedReviewDays(kp.createDate)) {
-        dto.reviewStatus = KnowledgePointStatus.PARTIAL_DONE;
-      } else {
-        dto.reviewStatus = KnowledgePointStatus.NO_DONE;
-      }
+      this.setKPReviewStatus(kp, dto);
     }
 
     return pageList;
   }
 
+
+  private setKPReviewStatus(kp: KnowledgePointEntity, dto: KnowledgePointPageDto) {
+    if (kp.allDone) {
+      dto.reviewStatus = KnowledgePointStatus.Done;
+    }  else if (kp.logs.length >= Util.getNeedReviewDays(kp.createDate)) {
+      dto.reviewStatus = KnowledgePointStatus.PARTIAL_DONE;
+    } else {
+      dto.reviewStatus = KnowledgePointStatus.NO_DONE;
+    }
+  }
 }
