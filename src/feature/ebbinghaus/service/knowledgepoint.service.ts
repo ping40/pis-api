@@ -15,6 +15,8 @@ import { KnowledgePointPageDto, KnowledgePointStatus } from '../dtos/KnowledgePo
 import { LoggerService } from 'nest-logger';
 import { KnowledgePointDetailDto } from '../dtos/KnowledgePointDetailDto';
 import { KnowledgePointLogDto } from '../dtos/KnowledgePointLogDto';
+import { of } from 'rxjs';
+import { KnowledgePointCommentDto } from '../dtos/KnowledgePointCommentDto';
 
 
 @Injectable()
@@ -122,13 +124,40 @@ export class KnowledgePointService {
       logDto.reviewDate = log.reviewDate;
       dto.logs.push(logDto);
     });
+
+    dto.comments = await this.getCommentsByKpId(kp.id);
+
     return dto;
+  }
+
+  async getCommentsByKpId( kpId: number): Promise<KnowledgePointCommentDto[]> {
+    const qb = this.kpcRepository
+    .createQueryBuilder('kpc')
+    .where('kpc.kpId = :kpId', {kpId});
+
+    const kpcs = await qb.getMany();
+
+    const kpcList: KnowledgePointCommentDto[] = [];
+    if( !kpcs) {
+      return kpcList;
+    }
+
+    kpcs.forEach(v => {
+      const dto = new KnowledgePointCommentDto();
+      dto.content = v.content;
+      dto.id = v.id;
+      dto.createDate = v.createDate;
+      dto.kpId = v.kpId;
+      kpcList.push(dto);
+    });
+
+    return kpcList;
   }
 
   private async findSimpleOne(userId: number, kpId: number): Promise<KnowledgePointEntity> {
     const findOneOptions = {
-      'id': kpId,
-      userId: userId,
+      id: kpId,
+      userId,
     };
 
     return await this.kpRepository.findOne(findOneOptions);

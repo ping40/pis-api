@@ -1,4 +1,10 @@
-import { KnowledgePointCommentEntity } from '../entities/knowledgepointcomment.entity';
 
-export class KnowledgePointCommentDto  extends KnowledgePointCommentEntity {
+export class KnowledgePointCommentDto {
+  id: number;
+
+  kpId: number;
+
+  content: string;
+
+  createDate: Date;
 }
