@@ -9,7 +9,7 @@ import { KnowledgePointLogEntity } from '../entities/knowledgepointlog.entity';
 import { KnowledgePointDto } from '../dtos/KnowledgePointDto';
 import { Transactional } from 'typeorm-transactional-cls-hooked';
 import { DeleteResult } from 'typeorm';
-import { Util } from 'src/common/util';
+import { Util } from '../../../common/util';
 import { KnowledgePointPageCondition } from '../dtos/KnowledgePointPageCondition';
 import { KnowledgePointPageDto, KnowledgePointStatus } from '../dtos/KnowledgePointPageDto';
 import { LoggerService } from 'nest-logger';

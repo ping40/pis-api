@@ -8,7 +8,7 @@ import {
   Param,
 } from '@nestjs/common';
 import { DeleteResult } from 'typeorm';
-import { User } from 'src/shared/user/user.decorator';
+import { User } from '../../../shared/user/user.decorator';
 import { KnowledgePointCommentService } from '../service/knowledgepointcomment.service';
 import { KnowledgePointCommentDto } from '../dtos/KnowledgePointCommentDto';
 import { KnowledgePointCommentEntity } from '../entities/knowledgepointcomment.entity';

@@ -5,7 +5,7 @@ import { KnowledgePointEntity } from '../entities/knowledgepoint.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { KnowledgePointLogEntity } from '../entities/knowledgepointlog.entity';
 import { Transactional } from 'typeorm-transactional-cls-hooked';
-import { Util } from 'src/common/util';
+import { Util } from '../../../common/util';
 import { KnowledgePointLogDto } from '../dtos/KnowledgePointLogDto';
 import _ = require('lodash');
 

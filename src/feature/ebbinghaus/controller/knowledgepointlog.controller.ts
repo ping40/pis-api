@@ -6,7 +6,7 @@ import {
 import { KnowledgePointLogService } from '../service/knowledgepointlog.service';
 import { KnowledgePointLogDto } from '../dtos/KnowledgePointLogDto';
 import { KnowledgePointLogEntity } from '../entities/knowledgepointlog.entity';
-import { User } from 'src/shared/user/user.decorator';
+import { User } from '../../../shared/user/user.decorator';
 
 @Controller('knowledgepointlogs')
 export class KnowledgePointLogController {
