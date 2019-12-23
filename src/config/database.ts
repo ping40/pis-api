@@ -1,6 +1,6 @@
 export default {
     type: 'sqlite',
-    database: 'database.db',
+    database: '/home/ubuntu/pis.db',
     synchronize: true,
     logging: false,
     entities: [__dirname + '/../**/*.entity{.ts,.js}'],
