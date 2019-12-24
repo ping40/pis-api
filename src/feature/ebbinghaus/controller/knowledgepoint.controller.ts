@@ -52,22 +52,20 @@ export class KnowledgePointController {
 
   /**
    * 时间date 创立的知识点
-   * @param userId 
-   * @param date 
+   * @param userId
    */
-  @Get('today/today')
-  async findByDay(@User('id') userId: number): Promise<KnowledgePointPageDto[] > {
+  @Get('today/create')
+  async findByDay(@User('id') userId: number): Promise<KnowledgePointPageDto[]> {
     return await  this.kpService.findByDay(userId);
   }
 
   /**
    * 时间date 要复习的知识点
-   * @param userId 
-   * @param date 
+   * @param userId
    */
-  @Get('reviewday/:date')
-  async reviewByDay(@User('id') userId: number, @Param('date') date: number): Promise<KnowledgePointEntity[] > {
-    return await  this.kpService.reviewByDay(userId, date);
+  @Get('today/review')
+  async reviewByDay(@User('id') userId: number): Promise<KnowledgePointPageDto[]> {
+    return await  this.kpService.reviewByDay(userId);
   }
 
   @Post('page')

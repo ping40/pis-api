@@ -467,7 +467,7 @@
 								"{{APIURL}}"
 							],
 							"path": [
-								"knowledgepoints/today/today"
+								"knowledgepoints/today/create"
 							]
 						}
 					},
@@ -487,10 +487,10 @@
 									"for(var i=0; i < responseJSON.length; i++) {",
 									"    var kp = responseJSON[i];",
 									"    tests['kp has \"id\" property'] = kp.hasOwnProperty('id');",
-									"    tests['kp has \"userId\" property'] = kp.hasOwnProperty('userId');",
-									"    tests['kp has legal \"userId\" value'] = kp.userId === pm.globals.get('userId');",
+									"    tests['kp has \"title\" property'] = kp.hasOwnProperty('title');",
+									"    tests['kp has \"reviewStatus\" property'] = kp.hasOwnProperty('reviewStatus');",
 									"    tests['kp has \"createDate\" property'] = kp.hasOwnProperty('createDate');",
-									"}",						
+										"}",						
 									""
 								]
 							}
@@ -517,7 +517,7 @@
 								"{{APIURL}}"
 							],
 							"path": [
-								"knowledgepoints/reviewday/{{createDate}}"
+								"knowledgepoints/today/review"
 							]
 						}
 					},

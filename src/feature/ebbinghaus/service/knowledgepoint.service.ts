@@ -181,7 +181,9 @@ export class KnowledgePointService {
   }
 
   @Transactional()
-  async reviewByDay(userId: number, date: number): Promise<KnowledgePointEntity[]> {
+  async reviewByDay(userId: number): Promise<KnowledgePointPageDto[]> {
+
+    const date = Util.formatDate(new Date());
 
     this.logger.debug('reviewDay: ' + JSON.stringify( Util.getReviewDays(date)));
     const qb = this.kpRepository
@@ -198,7 +200,10 @@ export class KnowledgePointService {
        Util.getReviewDays(date))
       .leftJoinAndSelect('kp.logs', 'kp_log');
 
-    return await qb.getMany();
+    const kpList = await qb.getMany();
+
+    const pageList: KnowledgePointPageDto[] = this.transferForPage(kpList);
+    return pageList;
   }
 
   async findKnowledgePointByPage(userId: number, cond: KnowledgePointPageCondition): Promise<KnowledgePointPageDto[]> {
