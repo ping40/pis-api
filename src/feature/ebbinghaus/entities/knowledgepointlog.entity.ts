@@ -7,7 +7,7 @@ export class KnowledgePointLogEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(type => KnowledgePointEntity, knowledgePointEntity => knowledgePointEntity.logs)
+  @ManyToOne(type => KnowledgePointEntity, knowledgePointEntity => knowledgePointEntity.logs, { onDelete: 'CASCADE' })
   knowledgePointEntity: KnowledgePointEntity;
 
   @Column()

@@ -55,9 +55,9 @@ export class KnowledgePointController {
    * @param userId 
    * @param date 
    */
-  @Get('today/:date')
-  async findByDay(@User('id') userId: number, @Param('date') date: number): Promise<KnowledgePointEntity[] > {
-    return await  this.kpService.findByDay(userId, date);
+  @Get('today/today')
+  async findByDay(@User('id') userId: number): Promise<KnowledgePointPageDto[] > {
+    return await  this.kpService.findByDay(userId);
   }
 
   /**

@@ -429,13 +429,15 @@
 								"exec": [
 									"var responseJSON = JSON.parse(responseBody);",
 									"",
+
+									"console.log('find by date: ' + responseBody)",
 									"tests['list lenght'] = responseJSON.length > 0;",
 									"console.log('find kp: ' + responseBody)",
 									"for(var i=0; i < responseJSON.length; i++) {",
 									"    var kp = responseJSON[i];",
 									"    tests['kp has \"id\" property'] = kp.hasOwnProperty('id');",
-									"    tests['kp has \"userId\" property'] = kp.hasOwnProperty('userId');",
-									"    tests['kp has legal \"userId\" value'] = kp.userId === pm.globals.get('userId');",
+									"    tests['kp has \"title\" property'] = kp.hasOwnProperty('title');",
+									"    tests['kp has \"reviewStatus\" property'] = kp.hasOwnProperty('reviewStatus');",
 									"    tests['kp has \"createDate\" property'] = kp.hasOwnProperty('createDate');",
 									"    tests['kp has legal \"createDate\" value'] = kp.createDate === pm.globals.get('createDate');",
 									"}",						
@@ -465,7 +467,7 @@
 								"{{APIURL}}"
 							],
 							"path": [
-								"knowledgepoints/today/{{createDate}}"
+								"knowledgepoints/today/today"
 							]
 						}
 					},

@@ -17,7 +17,7 @@ import { KnowledgePointDetailDto } from '../dtos/KnowledgePointDetailDto';
 import { KnowledgePointLogDto } from '../dtos/KnowledgePointLogDto';
 import { of } from 'rxjs';
 import { KnowledgePointCommentDto } from '../dtos/KnowledgePointCommentDto';
-
+import he = require('he');
 
 @Injectable()
 export class KnowledgePointService {
@@ -97,7 +97,7 @@ export class KnowledgePointService {
   }
 
   async findOne(userId: number, kpId: number): Promise<KnowledgePointDetailDto> {
-    
+
     const qb = this.kpRepository
     .createQueryBuilder('kp')
     .where('kp.userId = :userId', {userId})
@@ -126,6 +126,7 @@ export class KnowledgePointService {
     });
 
     dto.comments = await this.getCommentsByKpId(kp.id);
+    dto.isToday = dto.createDate === Util.formatDate(new Date());
 
     return dto;
   }
@@ -163,16 +164,20 @@ export class KnowledgePointService {
     return await this.kpRepository.findOne(findOneOptions);
   }
 
-
   @Transactional()
-  async findByDay(userId: number, date: number): Promise<KnowledgePointEntity[]> {
+  async findByDay(userId: number): Promise<KnowledgePointPageDto[]> {
+    const date = Util.formatDate(new Date());
     const qb = this.kpRepository
       .createQueryBuilder('kp')
       .where('kp.userId = :userId', {userId})
       .andWhere('kp.createDate = :createDate', {createDate:  date})
       .leftJoinAndSelect('kp.logs', 'kp_log');
 
-    return await qb.getMany();
+    const kpList = await qb.getMany();
+
+    const pageList: KnowledgePointPageDto[] = this.transferForPage(kpList);
+
+    return pageList;
   }
 
   @Transactional()
@@ -206,8 +211,9 @@ export class KnowledgePointService {
       .createQueryBuilder('kp')
       .where('kp.userId = :userId', {userId});
 
-    if (cond.filterContent != '') {
-        qb = qb.andWhere('kp.content like :content', {content: '%' + cond.filterContent + '%'});
+    if (cond.filterContent !== '') {
+      const s = he.encode(cond.filterContent, {decimal: true});
+        qb = qb.andWhere("kp.content like :content", {content: '%' + s + '%'});
       }
 
     qb =  qb.skip(cond2.skip())
@@ -216,18 +222,21 @@ export class KnowledgePointService {
       .leftJoinAndSelect('kp.logs', 'kp_log');
 
     const kpList = await qb.getMany();
+
+    const pageList: KnowledgePointPageDto[] = this.transferForPage(kpList);
+    return pageList;
+  }
+
+  private transferForPage(kpList: KnowledgePointEntity[]) {
     const pageList: KnowledgePointPageDto[] = [];
     let dto: KnowledgePointPageDto;
-
-    for (const kp of  kpList) {
+    for (const kp of kpList) {
       dto = new KnowledgePointPageDto(kp.id, kp.title, kp.createDate);
       pageList.push(dto);
       this.setKPReviewStatus(kp, dto);
     }
-
     return pageList;
   }
-
 
   private setKPReviewStatus(kp: KnowledgePointEntity, dto: KnowledgePointPageDto) {
     if (kp.allDone) {
