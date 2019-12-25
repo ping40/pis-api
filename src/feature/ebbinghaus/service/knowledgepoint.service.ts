@@ -200,7 +200,16 @@ export class KnowledgePointService {
        Util.getReviewDays(date))
       .leftJoinAndSelect('kp.logs', 'kp_log');
 
-    const kpList = await qb.getMany();
+    let kpList = await qb.getMany();
+    kpList = kpList.filter(v => {
+      let reviewed = false;
+      v.logs.forEach( k => {
+        if ( k.reviewDate >= date) {
+          reviewed = true;
+        }
+      });
+      return !reviewed;
+    });
 
     const pageList: KnowledgePointPageDto[] = this.transferForPage(kpList);
     return pageList;
