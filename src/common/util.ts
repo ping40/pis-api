@@ -57,8 +57,8 @@ export class Util {
     const stripedHtml = content.replace(/<[^>]+>/g, "");
     let title = he.decode(stripedHtml);
     title = title.replace(/\s\s+/g, " ");
-    if (title.length > 30) {
-      title = title.substr(0, 30);
+    if (title.length > 100) {
+      title = title.substr(0, 100);
     }
     return title;
   }
