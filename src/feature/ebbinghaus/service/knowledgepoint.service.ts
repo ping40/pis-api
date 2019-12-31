@@ -189,14 +189,14 @@ export class KnowledgePointService {
     const qb = this.kpRepository
       .createQueryBuilder('kp')
       .where('kp.userId = :userId', {userId})
-      .andWhere('kp.createDate = :b1 OR ' +
+      .andWhere('(kp.createDate = :b1 OR ' +
                               'kp.createDate = :b2 OR  ' +
                               'kp.createDate = :b4 OR ' +
                               'kp.createDate = :b7 OR ' +
                               'kp.createDate = :b15 OR ' +
                               'kp.createDate = :m1 OR ' +
                               'kp.createDate = :m3 OR ' +
-                              'kp.createDate = :m6',
+                              'kp.createDate = :m6)',
        Util.getReviewDays(date))
       .leftJoinAndSelect('kp.logs', 'kp_log');
 
