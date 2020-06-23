@@ -10,18 +10,22 @@ import { KnowledgePointLogController } from './controller/knowledgepointlog.cont
 import { KnowledgePointCommentController } from './controller/knowledgepointcomment.controller';
 import { KnowledgePointCommentService } from './service/knowledgepointcomment.service';
 import { LoggerModule } from '../../shared/logger/logger.module';
+import { UserEntity } from './entities/user.entity';
+import { UserService } from './service/user.service';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([KnowledgePointEntity]),
     TypeOrmModule.forFeature([KnowledgePointCommentEntity]),
     TypeOrmModule.forFeature([KnowledgePointLogEntity]),
+    TypeOrmModule.forFeature([UserEntity]),
     LoggerModule,
   ],
   providers: [
     KnowledgePointService,
     KnowledgePointLogService,
     KnowledgePointCommentService,
+    UserService,
   ],
   controllers: [
     KnowledgePointController,
