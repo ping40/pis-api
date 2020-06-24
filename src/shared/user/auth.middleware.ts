@@ -2,7 +2,7 @@ import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { NestMiddleware, HttpStatus, Injectable } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { verify } from 'jsonwebtoken';
-import { UserService } from './user.service';
+import { UserService } from '../../feature/ebbinghaus/service/user.service';
 import { LoggerService } from 'nest-logger';
 import { ConfigService } from 'nestjs-config';
 

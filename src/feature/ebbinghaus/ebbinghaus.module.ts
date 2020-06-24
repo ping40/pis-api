@@ -27,6 +27,9 @@ import { UserService } from './service/user.service';
     KnowledgePointCommentService,
     UserService,
   ],
+  exports:[
+    UserService,
+  ],
   controllers: [
     KnowledgePointController,
     KnowledgePointLogController,

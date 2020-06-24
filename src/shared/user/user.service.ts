@@ -11,7 +11,7 @@ export class UserService {
 
 ALLUSER: User[];
 SECRET: string;
-  
+
 constructor(private readonly config: ConfigService,
             private readonly logger: LoggerService) {
     this.ALLUSER = config.get('users').allUser;
@@ -19,7 +19,8 @@ constructor(private readonly config: ConfigService,
     this.logger.debug( JSON.stringify(this.ALLUSER));
   }
 
-  async findOne(loginUserDto: LoginUserDto): Promise<User> {
+  async findOne111(loginUserDto: LoginUserDto): Promise<User> {
+    console.log("not ok ");
      const user  = _.find(this.ALLUSER, (o) => {
           return o.name ===  loginUserDto.name  &&   o.password === loginUserDto.password;
       });

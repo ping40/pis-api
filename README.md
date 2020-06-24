@@ -18,3 +18,10 @@ Personal Intelligent System api
 2天后	| 27.8%
 6天后	| 25.4%
 一个月后	| 21.1% 
+
+
+
+# 开发/实现
+
+- 目录日志在 /tmp 目录下
+- dist 目录下 启动 node main.js

@@ -1,9 +1,10 @@
 import * as he from "he";
+import * as crypto from "crypto" ;
 
 const MILLISECONDS_PER_DAY = 1000 * 60 * 60 * 24;
 
 export class Util {
-  
+
   static subDays(reviewDate: number, createDate: number) {
     const review = Util.getDateFromNumber(reviewDate);
     const create = Util.getDateFromNumber(createDate);
@@ -87,5 +88,10 @@ export class Util {
     }
 
     return 1;
+  }
+
+  static sha2(str: string): string {
+    var md5 = crypto.createHash('sha256');
+    return md5.update(str).digest('hex');
   }
 }

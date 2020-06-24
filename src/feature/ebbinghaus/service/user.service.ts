@@ -3,6 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Transactional } from 'typeorm-transactional-cls-hooked';
 import {UserEntity} from "../entities/user.entity";
 import {UserRepository} from "../repository/user.repository";
+import {LoginUserDto} from "../../../shared/user/dto/login-user.dto";
+import {User} from "../../../shared/user/model/user.model";
+import * as _ from "lodash";
+import {LoggerService} from "nest-logger";
+import { Util } from "../../../common/util";
 
 
 @Injectable()
@@ -10,8 +15,8 @@ export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: UserRepository,
+    private readonly logger: LoggerService
   ) {
-    console.log('..............................ping');
     this.initData();
   }
 
@@ -32,4 +37,24 @@ export class UserService {
     return await this.userRepository.save(u);
   }
 
+
+  async findOne(loginUserDto: LoginUserDto): Promise<User> {
+    this.logger.debug(' in service user.service.ts ' + JSON.stringify(loginUserDto));
+    const one = await this.userRepository.findOne({name: loginUserDto.name});
+    if (one) {
+
+      this.logger.debug(' in service user.service.ts  ' + JSON.stringify(one));
+      if (one.password === Util.sha2(loginUserDto.password)) {
+        return one;
+      }
+    } else {
+      this.logger.debug(' in service user.service.ts  null');
+    }
+    return null;
+  }
+
+
+  async findById(id: number): Promise<User> {
+    return await this.userRepository.findOne({id: id});
+  }
 }
